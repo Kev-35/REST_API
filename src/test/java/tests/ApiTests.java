@@ -14,7 +14,7 @@ public class ApiTests {
     @BeforeAll
     public static void setupEnvironmentForAllTests() {
         RestAssured.baseURI = "https://reqres.in";
-        basePath = "/api";
+        RestAssured.basePath = "/api";
     }
 
     @Test
