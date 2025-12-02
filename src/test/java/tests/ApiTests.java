@@ -1,3 +1,4 @@
+package tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -8,17 +9,18 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class CreateUserApiTests {
+public class ApiTests {
 
     @BeforeAll
     public static void setupEnvironmentForAllTests() {
         RestAssured.baseURI = "https://reqres.in";
+        basePath = "/api";
     }
 
     @Test
     @DisplayName("Успешное создание пользователя в системе")
-    void successfulUserCreationTest(){
-        String bodyRq = "{\"name\": \"morpheus\", \"job\": \"leader\"}";
+    void createUserTest(){
+        String bodyRq = "{\"name\": \"Кочка\", \"job\": \"Инженер\"}";
 
         given()
                 .log().uri()
@@ -26,20 +28,20 @@ public class CreateUserApiTests {
                 .contentType(ContentType.JSON)
                 .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
-                .post("/api/users")
+                .post("/users/1")
         .then()
                 .log().status()
                 .log().body()
                 .statusCode(201)
-                .body("name", equalTo("morpheus"))
-                .body("job", equalTo("leader"))
+                .body("name", equalTo("Кочка"))
+                .body("job", equalTo("Инженер"))
                 .body("id", notNullValue())
                 .body("createdAt", notNullValue());
     }
 
     @Test
     @DisplayName("Запрос без атрибута \"name\"")
-    void unsuccessfulUserCreationWithoutNameTest(){
+    void unsuccessfulCreateUserWithoutNameTest(){
         String bodyRq = "{\"job\": \"leader\"}";
 
         given()
@@ -49,7 +51,7 @@ public class CreateUserApiTests {
                 .contentType(ContentType.JSON)
                 .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
-                .post("/api/users")
+                .post("/users")
         .then()
                 .log().status()
                 .log().body()
@@ -61,7 +63,7 @@ public class CreateUserApiTests {
 
     @Test
     @DisplayName("Пустое тело запроса")
-    void unsuccessfulUserCreationEmptyRequest(){
+    void unsuccessfulCreateUserEmptyRequest(){
         String bodyRq = "{}";
 
         given()
@@ -71,7 +73,7 @@ public class CreateUserApiTests {
                 .contentType(ContentType.JSON)
                 .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
-                .post("/api/users")
+                .post("/users")
         .then()
                 .log().status()
                 .log().body()
@@ -82,7 +84,7 @@ public class CreateUserApiTests {
 
     @Test
     @DisplayName("Отсутствие в хедерах Api-Key")
-    void unsuccessfulUserCreationWithoutApiKeyTest(){
+    void unsuccessfulCreateUserWithoutApiKeyTest(){
         String bodyRq = "{\"name\": \"morpheus\", \"job\": \"leader\"}";
 
         given()
@@ -91,7 +93,7 @@ public class CreateUserApiTests {
                 .contentType(ContentType.JSON)
                 .header("x-api-key", "")
         .when()
-                .post("/api/users")
+                .post("/users")
         .then()
                 .log().status()
                 .log().body()
@@ -101,17 +103,49 @@ public class CreateUserApiTests {
 
     @Test
     @DisplayName("Отсутствие тело запроса")
-    void unsuccessfulUserCreationWithoutBody(){
+    void unsuccessfulCreateUserWithoutBody(){
 
         given()
                 .log().uri()
                 .contentType(ContentType.JSON)
                 .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
-                .post("/api/users")
+                .post("/users")
         .then()
                 .log().status()
                 .log().body()
                 .statusCode(400);
+    }
+    @Test
+    @DisplayName("Обновление пользователя")
+    public void updateUserTest() {
+        String bodyRq = "{\"name\": \"Дима\", \"job\": \"Грузчик\"}";
+
+        given()
+                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
+                .contentType(ContentType.JSON)
+                .body(bodyRq)
+        .when()
+                .put("/users/1")
+        .then()
+                .log().status()
+                .statusCode(200)
+                .log().body()
+                .body("name", equalTo("Дима"))
+                .body("job", equalTo("Грузчик"))
+                .body("updatedAt", notNullValue());
+    }
+
+    @Test
+    @DisplayName("Удаление пользователя")
+    public void deleteUserTest() {
+
+        given()
+                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
+        .when()
+                .delete("/users/1")
+        .then()
+                .log().body()
+                .statusCode(204).body(equalTo(""));
     }
 }

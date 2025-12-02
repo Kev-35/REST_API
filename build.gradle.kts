@@ -3,6 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     id("java")
     id("io.qameta.allure") version "2.10.0"
+    id ("io.freefair.lombok") version "6.0.0-m2"
 }
 
 group = "ru.kev35"
@@ -48,7 +49,9 @@ dependencies {
     testImplementation("io.qameta.allure:allure-selenide:2.17.3") // Allure for Selenide
     testRuntimeOnly("org.aspectj:aspectjweaver:1.9.25") //aspectjWeaver для обработки аннотации step for Allure
 
-    testImplementation("io.rest-assured:rest-assured:5.1.0") // REST-assured
+    testImplementation("io.rest-assured:rest-assured:5.5.0") // REST-assured
+    testImplementation("io.rest-assured:json-schema-validator:5.5.0")
+    testImplementation("io.qameta.allure:allure-rest-assured:2.24.0")
 
     implementation("org.slf4j:slf4j-api:2.0.7") // используется в Java-приложениях для абстракции процесса логирования
 }
@@ -64,13 +67,5 @@ tasks.withType<Test> {
             events("started", "skipped", "failed", "standard_error", "standard_out")
             exceptionFormat = TestExceptionFormat.SHORT
         }
-    }
-}
-
-// Таски для запусков тестов чере Gradle по тегу (команда: clean gradle API_test) и в Jenkins по названию таски (clean gradle restApi)
-tasks.register("restApi", Test::class) {
-    useJUnitPlatform {
-        includeTags("API_Test")
-        // gradle restApi excludeTags("Tag") исключает тесты по Тегу
     }
 }
