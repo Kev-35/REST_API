@@ -102,7 +102,7 @@ public class ApiTests {
     }
 
     @Test
-    @DisplayName("Отсутствие тело запроса")
+    @DisplayName("Отсутствие тела запроса")
     void unsuccessfulCreateUserWithoutBody(){
 
         given()
@@ -114,7 +114,9 @@ public class ApiTests {
         .then()
                 .log().status()
                 .log().body()
-                .statusCode(400);
+                .statusCode(400)
+                .body("error", equalTo("Empty request body"))
+                .body("message", equalTo("Request body cannot be empty for JSON endpoints"));
     }
     @Test
     @DisplayName("Обновление пользователя")
