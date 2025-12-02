@@ -24,7 +24,7 @@ public class CreateUserApiTests {
                 .log().uri()
                 .body(bodyRq)
                 .contentType(ContentType.JSON)
-                .header("x-api-key", "reqres-free-v1")
+                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
                 .post("/api/users")
         .then()
@@ -47,7 +47,7 @@ public class CreateUserApiTests {
                 .log().body()
                 .body(bodyRq)
                 .contentType(ContentType.JSON)
-                .header("x-api-key", "reqres-free-v1")
+                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
                 .post("/api/users")
         .then()
@@ -69,7 +69,7 @@ public class CreateUserApiTests {
                 .log().body()
                 .body(bodyRq)
                 .contentType(ContentType.JSON)
-                .header("x-api-key", "reqres-free-v1")
+                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
                 .post("/api/users")
         .then()
@@ -89,14 +89,14 @@ public class CreateUserApiTests {
                 .log().uri()
                 .body(bodyRq)
                 .contentType(ContentType.JSON)
-                .header("", "")
+                .header("x-api-key", "")
         .when()
                 .post("/api/users")
         .then()
                 .log().status()
                 .log().body()
                 .statusCode(401)
-                .body("error", equalTo("Missing API key"));
+                .body("error", equalTo("api_key_required"));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class CreateUserApiTests {
         given()
                 .log().uri()
                 .contentType(ContentType.JSON)
-                .header("x-api-key", "reqres-free-v1")
+                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
                 .post("/api/users")
         .then()
