@@ -2,8 +2,8 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     id("java")
-    id("io.qameta.allure") version "2.10.0"
-    id ("io.freefair.lombok") version "6.0.0-m2"
+    id("io.qameta.allure") version "2.11.2"
+    id ("io.freefair.lombok") version "9.1.0-m2"
 }
 
 group = "ru.kev35"
@@ -12,13 +12,13 @@ version = "1.0-SNAPSHOT"
 
 allure {
     report {
-        version.set("2.19.0") //версия Allure Report (https://github.com/allure-framework/allure2)
+        version.set("2.24.0") //версия Allure Report (https://github.com/allure-framework/allure2)
     }
     adapter {
         aspectjWeaver.set(true) // обработка аннотации @Step
         frameworks {
             junit5 {
-                adapterVersion.set("2.19.0") //версия Allure JUnit5 (https://github.com/allure-framework/allure-java)
+                adapterVersion.set("2.24.0") //версия Allure JUnit5 (https://github.com/allure-framework/allure-java)
             }
         }
     }
@@ -49,11 +49,12 @@ dependencies {
     testImplementation("io.qameta.allure:allure-selenide:2.17.3") // Allure for Selenide
     testRuntimeOnly("org.aspectj:aspectjweaver:1.9.25") //aspectjWeaver для обработки аннотации step for Allure
 
-    testImplementation("io.rest-assured:rest-assured:5.5.0") // REST-assured
-    testImplementation("io.rest-assured:json-schema-validator:5.5.0")
+    testImplementation("io.rest-assured:rest-assured:5.5.6") // REST-assured
+    testImplementation("io.rest-assured:json-schema-validator:5.5.6")
     testImplementation("io.qameta.allure:allure-rest-assured:2.24.0")
 
-    implementation("org.slf4j:slf4j-api:2.0.7") // используется в Java-приложениях для абстракции процесса логирования
+    implementation("org.slf4j:slf4j-simple:2.0.7") // используется в Java-приложениях для абстракции процесса логирования или "org.slf4j:slf4j-api:2.0.7"
+    implementation("org.assertj:assertj-core:3.27.6")
 }
 
 tasks.withType<Test> {

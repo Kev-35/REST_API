@@ -9,13 +9,7 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class ApiTests {
-
-    @BeforeAll
-    public static void setupEnvironmentForAllTests() {
-        RestAssured.baseURI = "https://reqres.in";
-        RestAssured.basePath = "/api";
-    }
+public class ApiTests extends TestBaseApi {
 
     @Test
     @DisplayName("Успешное создание пользователя в системе")
