@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,6 @@ public class ApiTests extends TestBaseApi {
     @DisplayName("Успешное создание пользователя в системе")
     void createUserTest(){
         String bodyRq = "{\"name\": \"Кочка\", \"job\": \"Инженер\"}";
-
         given()
                 .log().uri()
                 .body(bodyRq)
