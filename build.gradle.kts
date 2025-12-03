@@ -69,4 +69,13 @@ tasks.withType<Test> {
             exceptionFormat = TestExceptionFormat.SHORT
         }
     }
+    tasks.register("apiTest", Test::class) {
+        useJUnitPlatform {
+            includeTags("API-test")
+//            запуск тестов по Тегу запуск
+//            (или в терминале, или в дженкинсе -> gradle demoqa
+//            excludeTags("Tag")
+//            исключает тесты по Тегу
+        }
+    }
 }
