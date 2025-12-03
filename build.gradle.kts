@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     id("java")
     id("io.qameta.allure") version "2.11.2"
-    id ("io.freefair.lombok") version "6.0.0-m2"
+    id("io.freefair.lombok") version "6.0.0-m2"
 }
 
 group = "ru.kev35"
@@ -59,23 +59,21 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    @Suppress("UNCHECKED_CAST")
-    systemProperties(System.getProperties() as Map<String, Any>) //Явно приводим System.getProperties() к Map<String, Any>
 
-    //Расширение логирования тестов
     testLogging {
         lifecycle {
             events("started", "skipped", "failed", "standard_error", "standard_out")
+            // Замените "short" на TestExceptionFormat.SHORT
             exceptionFormat = TestExceptionFormat.SHORT
         }
     }
-    tasks.register("apiTest", Test::class) {
-        useJUnitPlatform {
-            includeTags("API-test")
-//            запуск тестов по Тегу запуск
-//            (или в терминале, или в дженкинсе -> gradle demoqa
+}
+
+tasks.register("apiTest", Test::class) {
+    useJUnitPlatform {
+        includeTags("API-test") // запуск тестов по Тегу запуск
+//     (или в терминале, или в дженкинсе -> gradle demoqa
 //            excludeTags("Tag")
-//            исключает тесты по Тегу
-        }
+//    исключает тесты по Тегу
     }
 }
