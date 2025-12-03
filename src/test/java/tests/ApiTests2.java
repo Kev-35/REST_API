@@ -1,21 +1,24 @@
 package tests;
 
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import models.RqCreateUserApiModel;
 import models.RqUpdateUserApiModel;
 import models.RsCreateUserApiModel;
 import models.RsUpdateUserApiModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import specification.SpecsForApi;
+
+import static helpers.CustomAllureListener.withCustomTemplates;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
+import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static specification.SpecsForApi.rqCreateUserSpec;
+import static specification.SpecsForApi.rsCreateUserSpec;
 
-public class ApiWithSpecTests {
+public class ApiTests2 extends TestBaseApi {
 
     @Test
     @DisplayName("Успешное создание пользователя в системе")
@@ -23,25 +26,23 @@ public class ApiWithSpecTests {
         RqCreateUserApiModel bodyRq = new RqCreateUserApiModel();
         bodyRq.setName("Кочка");
         bodyRq.setJob("Инженер");
-        RsCreateUserApiModel bodyRs = given()
-                .filter(new AllureRestAssured())
-                        .log().uri()
-                        .body(bodyRq)
-                        .log().body()
-                        .contentType(ContentType.JSON)
-                        .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
-                .when()
-                        .post("/users/1")
-                .then()
-                        .log().status()
-                        .log().body()
-                        .statusCode(201)
-                .extract().as(RsCreateUserApiModel.class);
 
-        assertEquals("Кочка",bodyRs.getName());
-        assertEquals("Инженер",bodyRs.getJob());
-        assertNotNull(bodyRs.getId());
-        assertNotNull(bodyRs.getCreatedAt());
+        RsCreateUserApiModel bodyRs = step("Создание пользователя", ()->
+                        given(rqCreateUserSpec)
+                                .body(bodyRq)
+
+                .when()
+                .post("/users/1")
+
+                                .then()
+                                .spec(rsCreateUserSpec)
+                .extract().as(RsCreateUserApiModel.class));
+
+        step("Ответ от сервера", ()->
+                assertEquals("Кочка",bodyRs.getName()));
+                assertEquals("Инженер",bodyRs.getJob());
+                assertNotNull(bodyRs.getId());
+                assertNotNull(bodyRs.getCreatedAt());
     }
 
     @Test
@@ -51,11 +52,13 @@ public class ApiWithSpecTests {
         bodyRq.setName("Дима");
         bodyRq.setJob("Грузчик");
 
-        RsUpdateUserApiModel bodyRs = given()
+        RsUpdateUserApiModel bodyRs = with()
+                .filter(withCustomTemplates())
                 .log().uri()
-                .body(bodyRq)
                 .log().body()
-                .contentType(ContentType.JSON)
+                .log().headers()
+                .contentType(JSON)
+                .body(bodyRq)
                 .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
         .when()
                 .put("/users/1")
@@ -77,7 +80,8 @@ public class ApiWithSpecTests {
         given()
                 .log().uri()
                 .log().body()
-                .contentType(ContentType.JSON)
+                .log().headers()
+                .contentType(JSON)
                 .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
                 .when()
                 .delete("/users/1")
