@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     id("java")
     id("io.qameta.allure") version "2.11.2"
-    id ("io.freefair.lombok") version "9.1.0-m2"
+    id ("io.freefair.lombok") version "6.0.0-m2"
 }
 
 group = "ru.kev35"
