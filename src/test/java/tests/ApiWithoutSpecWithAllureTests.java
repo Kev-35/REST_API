@@ -11,8 +11,8 @@ import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static specification.SpecsForApi.baseReqSpec;
-import static specification.SpecsForApi.getResSpec;
+import static specification.SpecificanionForApi.baseReqSpec;
+import static specification.SpecificanionForApi.getResSpec;
 
 public class ApiWithoutSpecWithAllureTests extends TestBaseApi {
     RsCreateUserApiModel responseCreate;

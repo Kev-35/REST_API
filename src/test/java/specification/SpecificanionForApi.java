@@ -11,7 +11,7 @@ import static io.restassured.filter.log.LogDetail.STATUS;
 import static io.restassured.http.ContentType.JSON;
 
 
-public class SpecsForApi {
+public class SpecificanionForApi {
 
     private static final String API_KEY = "reqres_cf57c7dd8106450392f3dc134b1e4c2f";
 

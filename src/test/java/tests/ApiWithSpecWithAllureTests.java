@@ -7,13 +7,13 @@ import models.RsUpdateUserApiModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import specification.SpecsForApi;
+import specification.SpecificanionForApi;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static specification.SpecsForApi.*;
+import static specification.SpecificanionForApi.*;
 
 public class ApiWithSpecWithAllureTests extends TestBaseApi {
 
@@ -29,7 +29,7 @@ public class ApiWithSpecWithAllureTests extends TestBaseApi {
                         .when()
                         .post("/users/1")
                         .then()
-                        .spec(SpecsForApi.getResSpec(201))
+                        .spec(SpecificanionForApi.getResSpec(201))
                         .extract().as(RsCreateUserApiModel.class));
 
         step("Результаты теста", () ->
@@ -51,7 +51,7 @@ public class ApiWithSpecWithAllureTests extends TestBaseApi {
                         .when()
                         .put("/users/1")
                         .then()
-                        .spec(SpecsForApi.getResSpec(200))
+                        .spec(SpecificanionForApi.getResSpec(200))
                         .extract().as(RsUpdateUserApiModel.class));
 
         step("Результаты теста", () ->
@@ -69,6 +69,6 @@ public class ApiWithSpecWithAllureTests extends TestBaseApi {
                 .delete("/users/1")
                 .then()
                 .log().body()
-                .spec(SpecsForApi.getResSpec(204));
+                .spec(SpecificanionForApi.getResSpec(204));
     }
 }
