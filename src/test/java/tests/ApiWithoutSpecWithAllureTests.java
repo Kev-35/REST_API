@@ -63,7 +63,6 @@ public class ApiWithoutSpecWithAllureTests extends TestBaseApi {
     @DisplayName("Удаление пользователя")
     public void deleteUserTest() {
 
-        step("Удаление пользователя", () -> {
             given()
                     .spec(baseReqSpec)
                     .when()
@@ -71,6 +70,5 @@ public class ApiWithoutSpecWithAllureTests extends TestBaseApi {
                     .then()
                     .log().body()
                     .spec(getResSpec(204));
-        });
     }
 }
