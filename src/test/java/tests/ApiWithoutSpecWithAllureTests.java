@@ -1,5 +1,7 @@
 package tests;
 
+import io.restassured.http.ContentType;
+import models.RqCreateUserApiModel;
 import models.RqUpdateUserApiModel;
 import models.RsCreateUserApiModel;
 import models.RsUpdateUserApiModel;
@@ -12,87 +14,72 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.with;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static specification.SpecsForApi.baseReqSpec;
+import static specification.SpecsForApi.getResSpec;
 
 public class ApiWithoutSpecWithAllureTests extends TestBaseApi {
+    RsCreateUserApiModel responseCreate;
+    RsUpdateUserApiModel responseUpdate;
 
     @Test
     @DisplayName("Успешное создание пользователя в системе")
-    void createUserTest(){
-        RqUpdateUserApiModel bodyRq = new RqUpdateUserApiModel();
-        RsCreateUserApiModel bodyRs = new RsCreateUserApiModel();
+    void createUserTest() {
+        RqCreateUserApiModel requestBody = new RqCreateUserApiModel("Кочка", "Инженер");
+        step("Создание нового юзера", () -> {
+            responseCreate = given()
+                    .spec(baseReqSpec)
+                    .body(requestBody)
+                    .when()
+                    .post("/users")
+                    .then()
+                    .spec(getResSpec(201))
+                    .extract().as(RsCreateUserApiModel.class);
+        });
 
-        bodyRq.setName("Кочка");
-        bodyRq.setJob("Инженер");
-
-         RsCreateUserApiModel response = step("Создание нового юзера", () ->
-                given()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .contentType(JSON)
-                .body(bodyRq)
-                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
-
-                .when()
-                .post("/users/1")
-
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(201)
-                .extract().as(RsCreateUserApiModel.class));
-
-        assertEquals("Кочка",bodyRs.getName());
-        assertEquals("Инженер",bodyRs.getJob());
-        assertNotNull(bodyRs.getId());
-        assertNotNull(bodyRs.getCreatedAt());
+        step("Проверка данных в ответе сервера", () -> {
+            assertEquals(requestBody.getName(), responseCreate.getName());
+            assertEquals(requestBody.getJob(), responseCreate.getJob());
+            assertNotNull(responseCreate.getId());
+            assertNotNull(responseCreate.getCreatedAt());
+        });
     }
 
-    @Test
-    @DisplayName("Обновление пользователя")
-    public void updateUserTest() {
-        RqUpdateUserApiModel bodyRq = new RqUpdateUserApiModel();
-        bodyRq.setName("Дима");
-        bodyRq.setJob("Грузчик");
+        @Test
+        @DisplayName("Обновление пользователя")
+        public void updateUserTest() {
+            RqUpdateUserApiModel requestBody = new RqUpdateUserApiModel("Дима", "Грузчик");
 
-        RsUpdateUserApiModel bodyRs = with()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .contentType(JSON)
-                .body(bodyRq)
-                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
-        .when()
-                .put("/users/1")
-        .then()
-                .log().status()
-                .statusCode(200)
-                .log().body()
-                .extract().as(RsUpdateUserApiModel.class);
+            step("Обновление данных пользователя", () -> {
+                responseUpdate = given()
+                        .spec(baseReqSpec)
+                        .body(requestBody)
+                        .when()
+                        .put("/users/1")
+                        .then()
+                        .spec(getResSpec(200))
+                        .extract().as(RsUpdateUserApiModel.class);
+            });
 
-        assertEquals("Дима",bodyRs.getName());
-        assertEquals("Грузчик",bodyRs.getJob());
-        assertNotNull(bodyRs.getUpdatedAt());
-    }
+            step("Проверка данных в ответе сервера", () -> {
+                assertEquals(requestBody.getName(), responseUpdate.getName());
+                assertEquals(requestBody.getJob(), responseUpdate.getJob());
+                assertNotNull(responseUpdate.getUpdatedAt());
+            });
+        }
 
     @Test
     @DisplayName("Удаление пользователя")
     public void deleteUserTest() {
 
         given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .contentType(JSON)
-                .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f")
+                .spec(baseReqSpec)
                 .when()
                 .delete("/users/1")
                 .then()
                 .log().body()
-                .statusCode(204).body(equalTo(""));
+                .spec(getResSpec(204));
     }
 }

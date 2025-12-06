@@ -34,19 +34,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    testImplementation("com.github.javafaker:javafaker:1.0.2") //Fake data for tests
-
-    testImplementation("com.codeborne:selenide:7.9.4")  //Code borne for Selenide
-    testImplementation("com.codeborne:pdf-test:1.5.0") // Parse files pdf csv
-    testImplementation("com.codeborne:xls-test:1.4.3") // Parse files xls, xlsx
-    testImplementation("com.opencsv:opencsv:5.12.0") // Parse files csv
-    testImplementation("com.google.code.gson:gson:2.13.2") // Parse files json
-
     testImplementation("com.fasterxml.jackson.core:jackson-core:2.16.0") // Parse files json
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
     testImplementation("com.fasterxml.jackson.core:jackson-annotations:2.16.0")
 
-    testImplementation("io.qameta.allure:allure-selenide:2.17.3") // Allure for Selenide
     testRuntimeOnly("org.aspectj:aspectjweaver:1.9.25") //aspectjWeaver для обработки аннотации step for Allure
 
     testImplementation("io.rest-assured:rest-assured:5.5.6") // REST-assured

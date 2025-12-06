@@ -11,47 +11,22 @@ import static io.restassured.http.ContentType.JSON;
 
 
 public class SpecsForApi {
-    public static RequestSpecification rqCreateUserSpec = with()
+
+    private static final String API_KEY = "reqres_cf57c7dd8106450392f3dc134b1e4c2f";
+
+    public static RequestSpecification baseReqSpec = with()
             .filter(withCustomTemplates())
             .log().uri()
             .log().body()
             .log().headers()
             .contentType(JSON)
-            .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f");
+            .header("x-api-key", API_KEY);
 
-
-    public static ResponseSpecification rsCreateUserSpec = new ResponseSpecBuilder()
-            .expectStatusCode(201)
-            .log(STATUS)
-            .log(BODY)
-            .build();
-
-    public static RequestSpecification rqUpdateUserSpec = with()
-            .filter(withCustomTemplates())
-            .log().uri()
-            .log().body()
-            .log().headers()
-            .contentType(JSON)
-            .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f");
-
-    public static ResponseSpecification rsUpdateUserSpec = new ResponseSpecBuilder()
-            .expectStatusCode(200)
-            .log(STATUS)
-            .log(BODY)
-            .build();
-
-    public static RequestSpecification rqDeleteUserSpec = with()
-            .filter(withCustomTemplates())
-            .log().uri()
-            .log().body()
-            .log().headers()
-            .contentType(JSON)
-            .header("x-api-key", "reqres_cf57c7dd8106450392f3dc134b1e4c2f");
-
-
-    public static ResponseSpecification rsDeleteUserSpec = new ResponseSpecBuilder()
-            .expectStatusCode(204)
-            .log(STATUS)
-            .log(BODY)
-            .build();
+    public static ResponseSpecification getResSpec(int expectedStatusCode) {
+        return new ResponseSpecBuilder()
+                .expectStatusCode(expectedStatusCode)
+                .log(STATUS)
+                .log(BODY)
+                .build();
+    }
 }
