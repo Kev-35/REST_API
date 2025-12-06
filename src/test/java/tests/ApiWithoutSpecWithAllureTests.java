@@ -32,13 +32,11 @@ public class ApiWithoutSpecWithAllureTests extends TestBaseApi {
                     .spec(getResSpec(201))
                     .extract().as(RsCreateUserApiModel.class);
         });
+        assertEquals(requestBody.getName(), responseCreate.getName());
+        assertEquals(requestBody.getJob(), responseCreate.getJob());
+        assertNotNull(responseCreate.getId());
+        assertNotNull(responseCreate.getCreatedAt());
 
-        step("Проверка данных в ответе сервера", () -> {
-            assertEquals(requestBody.getName(), responseCreate.getName());
-            assertEquals(requestBody.getJob(), responseCreate.getJob());
-            assertNotNull(responseCreate.getId());
-            assertNotNull(responseCreate.getCreatedAt());
-        });
     }
 
     @Test
@@ -56,24 +54,23 @@ public class ApiWithoutSpecWithAllureTests extends TestBaseApi {
                     .spec(getResSpec(200))
                     .extract().as(RsUpdateUserApiModel.class);
         });
-
-        step("Проверка данных в ответе сервера", () -> {
-            assertEquals(requestBody.getName(), responseUpdate.getName());
-            assertEquals(requestBody.getJob(), responseUpdate.getJob());
-            assertNotNull(responseUpdate.getUpdatedAt());
-        });
+        assertEquals(requestBody.getName(), responseUpdate.getName());
+        assertEquals(requestBody.getJob(), responseUpdate.getJob());
+        assertNotNull(responseUpdate.getUpdatedAt());
     }
 
     @Test
     @DisplayName("Удаление пользователя")
     public void deleteUserTest() {
 
-        given()
-                .spec(baseReqSpec)
-                .when()
-                .delete("/users/1")
-                .then()
-                .log().body()
-                .spec(getResSpec(204));
+        step("Удаление пользователя", () -> {
+            given()
+                    .spec(baseReqSpec)
+                    .when()
+                    .delete("/users/1")
+                    .then()
+                    .log().body()
+                    .spec(getResSpec(204));
+        });
     }
 }
