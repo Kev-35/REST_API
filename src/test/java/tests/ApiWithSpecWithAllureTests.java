@@ -5,70 +5,70 @@ import models.RqUpdateUserApiModel;
 import models.RsCreateUserApiModel;
 import models.RsUpdateUserApiModel;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import specification.SpecificanionForApi;
 
 import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static specification.SpecificanionForApi.*;
+import static specification.SpecificanionForApi.baseReqSpec;
+import static specification.SpecificanionForApi.getResSpec;
 
 public class ApiWithSpecWithAllureTests extends TestBaseApi {
+    RsCreateUserApiModel responseCreate;
+    RsUpdateUserApiModel responseUpdate;
 
     @Test
-    @Tag("API-test")
     @DisplayName("Успешное создание пользователя в системе")
     void createUserTest() {
+        RqCreateUserApiModel requestBody = new RqCreateUserApiModel("Кочка", "Инженер");
+        step("Создание нового юзера", () -> {
+            responseCreate = given()
+                    .spec(baseReqSpec)
+                    .body(requestBody)
+                    .when()
+                    .post("/users")
+                    .then()
+                    .spec(getResSpec(201))
+                    .extract().as(RsCreateUserApiModel.class);
+        });
+        assertEquals(requestBody.getName(), responseCreate.getName());
+        assertEquals(requestBody.getJob(), responseCreate.getJob());
+        assertNotNull(responseCreate.getId());
+        assertNotNull(responseCreate.getCreatedAt());
 
-        RqCreateUserApiModel bodyRq = new RqCreateUserApiModel("Роман", "Инженер");
-        RsCreateUserApiModel bodyRs = step("Создание пользователя", () ->
-                given(baseReqSpec)
-                        .body(bodyRq)
-                        .when()
-                        .post("/users/1")
-                        .then()
-                        .spec(SpecificanionForApi.getResSpec(201))
-                        .extract().as(RsCreateUserApiModel.class));
-
-        step("Результаты теста", () ->
-                assertEquals("Роман", bodyRs.getName()));
-        assertEquals("Инженер", bodyRs.getJob());
-        assertNotNull(bodyRs.getId());
-        assertNotNull(bodyRs.getCreatedAt());
     }
 
     @Test
-    @Tag("API-test")
     @DisplayName("Обновление пользователя")
     public void updateUserTest() {
+        RqUpdateUserApiModel requestBody = new RqUpdateUserApiModel("Дима", "Грузчик");
 
-        RqUpdateUserApiModel bodyRq = new RqUpdateUserApiModel("Дима", "Грузчик");
-        RsUpdateUserApiModel bodyRs = step("Изменение данных пользователя", () ->
-                given(baseReqSpec)
-                        .body(bodyRq)
-                        .when()
-                        .put("/users/1")
-                        .then()
-                        .spec(SpecificanionForApi.getResSpec(200))
-                        .extract().as(RsUpdateUserApiModel.class));
-
-        step("Результаты теста", () ->
-                assertEquals("Дима", bodyRs.getName()));
-        assertEquals("Грузчик", bodyRs.getJob());
-        assertNotNull(bodyRs.getUpdatedAt());
+        step("Обновление данных пользователя", () -> {
+            responseUpdate = given()
+                    .spec(baseReqSpec)
+                    .body(requestBody)
+                    .when()
+                    .put("/users/1")
+                    .then()
+                    .spec(getResSpec(200))
+                    .extract().as(RsUpdateUserApiModel.class);
+        });
+        assertEquals(requestBody.getName(), responseUpdate.getName());
+        assertEquals(requestBody.getJob(), responseUpdate.getJob());
+        assertNotNull(responseUpdate.getUpdatedAt());
     }
 
     @Test
-    @Tag("API-test")
     @DisplayName("Удаление пользователя")
     public void deleteUserTest() {
-        given(baseReqSpec)
+
+        given()
+                .spec(baseReqSpec)
                 .when()
                 .delete("/users/1")
                 .then()
                 .log().body()
-                .spec(SpecificanionForApi.getResSpec(204));
+                .spec(getResSpec(204));
     }
 }
